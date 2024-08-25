@@ -6,32 +6,31 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.post('/bfhl', (req, res) => {
+    const data = req.body;
+    const { user_id, email, roll_number, data_array } = data;
 
-    const { full_name, dob } = req.body;
-    
-    if (!full_name || !dob) {
+    const numbers = data_array.filter(item => !isNaN(item));
+    const alphabets = data_array.filter(item => isNaN(item));
 
-        return res.status(400).json({
-            user_id: null,
-            is_success: false
-        });
-    }
-
-    const formattedDob = dob.split('-').join('');
-    const userId = `${full_name.toLowerCase().replace(' ', '_')}_${formattedDob}`;
+    const lowercaseAlphabets = alphabets.filter(item => /^[a-z]$/.test(item));
+    const highestLowercaseAlphabet = lowercaseAlphabets.length > 0 ? [lowercaseAlphabets.sort().pop()] : [];
 
     res.json({
-        user_id: userId,
-        is_success: true
+        status: "success",
+        user_id: user_id,
+        college_email: email,
+        college_roll_number: roll_number,
+        numbers: numbers,
+        alphabets: alphabets,
+        highest_lowercase_alphabet: highestLowercaseAlphabet
     });
 });
 
 app.get('/bfhl', (req, res) => {
-
-    res.json({
+    res.status(200).json({
         operation_code: 1
     });
 });
@@ -39,5 +38,3 @@ app.get('/bfhl', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
-exports.api = functions.https.onRequest(app)
