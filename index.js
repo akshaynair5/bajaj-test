@@ -10,7 +10,10 @@ const PORT = 3000;
 
 app.post('/bfhl', (req, res) => {
     const data = req.body;
-    const { user_id, email, roll_number, data_array } = data;
+    data_array = data.data;
+    user_id = 'akshay_mathilakath_nair_16082003'
+    email = 'akshay.mathilakath2021@vitbhopal.ac.in'
+    roll_number = '21BCE11013'
 
     const numbers = data_array.filter(item => !isNaN(item));
     const alphabets = data_array.filter(item => isNaN(item));
